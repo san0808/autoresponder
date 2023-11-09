@@ -43,26 +43,32 @@ async function filterUnrepliedEmails(oauth2Client, unreadEmails) {
 }
 
 async function sendReply(oauth2Client, email) {
-  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+  try{
+        const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-  // Use the email ID to fetch the email thread
-  const thread = await gmail.users.threads.get({
-    userId: 'me',
-    id: email.threadId,
-  });
+      // Use the email ID to fetch the email thread
+      const thread = await gmail.users.threads.get({
+        userId: 'me',
+        id: email.threadId,
+      });
 
-  // Create the reply message
-  const message = "I am currently out of office and will get back to you as soon as I return.";
-  const encodedMessage = Buffer.from(`Content-Type: text/plain; charset="UTF-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nto: ${thread.data.messages[0].payload.headers.find(header => header.name === "From").value}\nsubject: Re: ${thread.data.messages[0].payload.headers.find(header => header.name === "Subject").value}\n\n${message}`).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      // Create the reply message
+      const message = "I am currently out of office and will get back to you as soon as I return.";
+      const encodedMessage = Buffer.from(`Content-Type: text/plain; charset="UTF-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nto: ${thread.data.messages[0].payload.headers.find(header => header.name === "From").value}\nsubject: Re: ${thread.data.messages[0].payload.headers.find(header => header.name === "Subject").value}\n\n${message}`).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
-  // Send the reply
-  await gmail.users.messages.send({
-    userId: 'me',
-    requestBody: {
-      raw: encodedMessage,
-      threadId: email.threadId
-    }
-  });
+      // Send the reply
+      await gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+          raw: encodedMessage,
+          threadId: email.threadId
+        }
+      });
+
+  } catch (error) {
+    console.error(`Failed to send reply to ${email.id}:`, error);
+  }
+  
 }
 
 async function applyLabelAndArchive(oauth2Client, email) {
