@@ -107,3 +107,6 @@ node app.js
 - Introduce rate limiting and quota checks to adhere to Gmail API constraints.
 - Add unit and integration tests for more robust testing.
 - Implement CI/CD pipelines for streamlined testing and deployment.
+
+## Updates
+- added filters to fetch specific emnails from updates tab and avoid promotional emails and support emails (but still cumbersome as you need to hardcode stuff still )
