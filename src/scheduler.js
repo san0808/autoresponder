@@ -41,7 +41,6 @@ function startScheduler(oauth2Client) {
     }
   }
 
-  // Start the processing loop
   processEmails();
 }
 

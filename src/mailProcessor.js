@@ -6,7 +6,7 @@ async function fetchUnreadEmails(oauth2Client) {
     const response = await gmail.users.messages.list({
       userId: 'me',
       labelIds: ['INBOX'],
-      q: 'is:unread'
+      q: 'is:unread (category:updates)'
     });
     return response.data.messages || []; // If there are no messages, return an empty array
   } catch (error) {

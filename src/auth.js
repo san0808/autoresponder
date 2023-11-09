@@ -1,3 +1,5 @@
+const { startScheduler } = require('./scheduler');
+
 function authenticate(app, oauth2Client) {
     app.get('/auth', (req, res) => {
       // Generate an authentication URL
@@ -10,13 +12,20 @@ function authenticate(app, oauth2Client) {
   
     app.get('/auth/callback', async (req, res) => {
       const { code } = req.query;
-      const { tokens } = await oauth2Client.getToken(code);
-      oauth2Client.setCredentials(tokens);
-      
-      // Save the tokens here (in a database or a file)
-      // ...
-  
-      res.send('Authentication successful! Close this page and return to the app.');
+      try {
+        const { tokens } = await oauth2Client.getToken(code);
+        oauth2Client.setCredentials(tokens);
+    
+        // Save the tokens for later use
+        // ... (code to save tokens securely)
+    
+        startScheduler(oauth2Client);
+    
+        res.send('Authentication successful! The auto-reply scheduler has started.');
+      } catch (error) {
+        console.error('Error during authentication:', error);
+        res.status(500).send('Authentication failed');
+      }
     });
   }
   

@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { google } = require('googleapis');
 const { authenticate } = require('./src/auth');
-const { startScheduler } = require('./src/scheduler');
+// const { startScheduler } = require('./src/scheduler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,8 +21,8 @@ authenticate(app, oauth2Client);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   
-  // Start the scheduler after the server starts and OAuth2 has been set up
-  startScheduler(oauth2Client);
+  // // Start the scheduler after the server starts and OAuth2 has been set up
+  // startScheduler(oauth2Client);
 });
 
 module.exports = oauth2Client;
